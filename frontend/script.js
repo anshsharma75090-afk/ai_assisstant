@@ -69,8 +69,8 @@ function safeJsonParse(value, fallback) {
     }
 }
 
-const API_URL = "https://ai-assisstant-ws4u.onrender.com";
-let API_URL = (storageGet("apiUrl") || FALLBACK_API_URL).replace("8002", "8000");
+const FALLBACK_API_URL = "https://ai-assisstant-ws4u.onrender.com";
+let API_URL = FALLBACK_API_URL;
 
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
