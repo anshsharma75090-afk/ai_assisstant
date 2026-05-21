@@ -166,14 +166,15 @@ textarea:disabled {
 }
 
 .brand h1 {
-    color: #0f172a;   /* dark visible text */
-    opacity: 1;
-    font-weight: 700;
+    color: #ffffff;
+    font-size: 21px;
+    line-height: 1.1;
+    font-weight: 800;
 }
 
 .brand p {
     margin-top: 4px;
-    color: #ebecee;
+    color: #b7c6dc;
     font-size: 13px;
 }
 
