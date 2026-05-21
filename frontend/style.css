@@ -166,8 +166,9 @@ textarea:disabled {
 }
 
 .brand h1 {
-    font-size: 21px;
-    line-height: 1.1;
+    color: #0f172a;   /* dark visible text */
+    opacity: 1;
+    font-weight: 700;
 }
 
 .brand p {
