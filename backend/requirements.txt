@@ -1,0 +1,25 @@
+# Backend API server
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+
+# Data validation and database
+pydantic
+sqlalchemy
+
+# AI model providers
+groq
+google-genai
+google-generativeai
+
+# Agent workflow
+langgraph
+langchain
+
+# PDF reading and RAG/vector search
+pypdf
+chromadb
+
+# Web search
+tavily-python
