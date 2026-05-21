@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learnix AI</title>
-    <link rel="stylesheet" href="style.css?v=46">
+    <link rel="stylesheet" href="style.css?v=47">
 </head>
 <body>
     <section id="authScreen" class="auth-screen">
@@ -32,6 +32,7 @@
         </div>
     </section>
 
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
     <div class="app">
         <aside class="sidebar">
             <div class="brand">
@@ -40,6 +41,11 @@
                     <h1>Learnix AI</h1>
                     <p>Learning workspace</p>
                 </div>
+                <button class="sidebar-close-btn" type="button" onclick="closeMobileSidebar()" aria-label="Close sidebar">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 6l-6 6 6 6"></path>
+                    </svg>
+                </button>
             </div>
 
             <div class="sidebar-status">
@@ -95,9 +101,18 @@
 
         <main class="chat-area">
             <header class="chat-header">
-                <div>
-                    <p class="chat-kicker">Workspace</p>
-                    <h2>Learnix AI Assistant</h2>
+                <div class="mobile-title-row">
+                    <button id="mobileMenuBtn" class="mobile-menu-btn" type="button" onclick="openMobileSidebar()" aria-label="Open sidebar">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 6h16"></path>
+                            <path d="M4 12h16"></path>
+                            <path d="M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <div>
+                        <p class="chat-kicker">Workspace</p>
+                        <h2>Learnix AI Assistant</h2>
+                    </div>
                 </div>
                 <div class="header-actions">
                     <button id="themeToggleBtn" class="header-btn" type="button" onclick="toggleTheme()">Light</button>
@@ -147,6 +162,6 @@
     </div>
     <div id="toastRoot" class="toast-root" aria-live="polite"></div>
 
-    <script src="script.js?v=46"></script>
+    <script src="script.js?v=47"></script>
 </body>
 </html>

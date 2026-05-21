@@ -87,6 +87,7 @@ const sendBtn = document.getElementById("sendBtn");
 const voiceSendBtn = document.getElementById("voiceSendBtn");
 const composerMicBtn = document.getElementById("composerMicBtn");
 const voiceModuleState = document.getElementById("voiceModuleState");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
 const regenerateBtn = document.getElementById("regenerateBtn");
 const themeToggleBtn = document.getElementById("themeToggleBtn");
 const authScreen = document.getElementById("authScreen");
@@ -182,9 +183,30 @@ function showAppForUser() {
     userName.textContent = authUser?.name || authUser?.email || "User";
 }
 
+function openMobileSidebar() {
+    document.body.classList.add("sidebar-open");
+}
+
+function closeMobileSidebar() {
+    document.body.classList.remove("sidebar-open");
+}
+
+window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeMobileSidebar();
+    }
+});
+
+window.addEventListener("resize", () => {
+    if (window.innerWidth > 900) {
+        closeMobileSidebar();
+    }
+});
+
 function showLogin() {
     authScreen.classList.remove("hidden");
     userName.textContent = "Guest";
+    closeMobileSidebar();
 }
 
 function logout() {
@@ -382,11 +404,13 @@ function closeAttachmentMenu() {
 }
 
 function openImagePicker() {
+    closeMobileSidebar();
     closeAttachmentMenu();
     imageInput.click();
 }
 
 function openPdfPicker() {
+    closeMobileSidebar();
     closeAttachmentMenu();
     pdfFile.click();
 }
@@ -553,6 +577,7 @@ function addWelcomeMessage() {
 }
 
 function quickPrompt(text) {
+    closeMobileSidebar();
     userInput.value = text;
     resizeComposer();
     userInput.focus();
@@ -659,6 +684,7 @@ function stopSpeaking() {
 
 function newChat() {
     if (isSending) return;
+    closeMobileSidebar();
     hasUserInteracted = true;
     setSession(null);
     clearChatBox();
@@ -738,6 +764,7 @@ async function loadChatSessions() {
 
 async function loadChat(sessionId) {
     if (isSending) return;
+    closeMobileSidebar();
     hasUserInteracted = true;
     storageSet("activeSessionId", sessionId);
     tabStorageSet("activeSessionId", sessionId);
@@ -1649,6 +1676,8 @@ async function uploadPdfAndAsk(selectedFile, question) {
 
 window.newChat = newChat;
 window.logout = logout;
+window.openMobileSidebar = openMobileSidebar;
+window.closeMobileSidebar = closeMobileSidebar;
 window.setAuthMode = setAuthMode;
 window.uploadPDF = uploadPDF;
 window.startListening = startListening;
@@ -1675,6 +1704,8 @@ Object.defineProperty(window, "lastAssistantText", {
 function attachWindowActions() {
     window.newChat = newChat;
     window.logout = logout;
+    window.openMobileSidebar = openMobileSidebar;
+    window.closeMobileSidebar = closeMobileSidebar;
     window.setAuthMode = setAuthMode;
     window.uploadPDF = uploadPDF;
     window.startListening = startListening;
@@ -1811,4 +1842,3 @@ async function initApp() {
 
 initApp();
 applyTheme(currentTheme);
-
