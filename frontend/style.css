@@ -1083,34 +1083,100 @@ body[data-theme="light"] {
 }
 
 @media (max-width: 900px) {
+    html,
+    body {
+        overflow: hidden;
+    }
+
     .app {
-        grid-template-columns: 320px minmax(560px, 1fr);
-        overflow-x: auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(210px, 36dvh) minmax(0, 1fr);
+        height: 100dvh;
+        overflow: hidden;
     }
 
     .sidebar {
-        gap: 14px;
-        height: 100vh;
-        max-height: none;
-        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-content: start;
+        gap: 10px;
+        height: auto;
+        min-height: 0;
+        padding: 12px;
+        overflow-y: auto;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand,
+    .new-chat-btn,
+    .user-strip,
+    .history-panel {
+        grid-column: 1 / -1;
+    }
+
+    .brand-mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+    }
+
+    .brand h1 {
+        font-size: 19px;
+    }
+
+    .brand p,
+    .sidebar-status {
+        font-size: 12px;
+    }
+
+    .sidebar-status {
+        min-height: 30px;
     }
 
     .history-panel {
         flex: 0 0 auto;
-        min-height: 150px;
-        max-height: 260px;
+        min-height: 92px;
+        max-height: 150px;
     }
 
     .chat-history {
-        max-height: 180px;
+        min-height: 42px;
+        max-height: 92px;
     }
 
     .panel {
-        padding: 12px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .panel-title {
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .quick-grid {
+        gap: 6px;
+    }
+
+    .quick-grid button {
+        min-height: 34px;
+        padding: 0 6px;
+        font-size: 11px;
+    }
+
+    .module-list {
+        gap: 5px;
+    }
+
+    .module-list div {
+        min-height: 22px;
+        font-size: 11px;
     }
 
     .chat-area {
-        height: 100vh;
+        min-height: 0;
+        height: auto;
     }
 
     .chat-header,
@@ -1124,41 +1190,228 @@ body[data-theme="light"] {
         align-items: center;
         flex-direction: row;
         gap: 10px;
+        padding-top: 12px;
+        padding-bottom: 12px;
     }
 
     .header-actions {
         align-items: flex-end;
         flex-direction: column;
+        gap: 6px;
+    }
+
+    .header-btn {
+        min-height: 34px;
+        padding: 0 10px;
+        font-size: 13px;
     }
 
     .chat-header h2 {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .session-pill {
-        max-width: 100%;
+        max-width: 148px;
+        padding: 7px 10px;
         font-size: 13px;
+    }
+
+    .chat-box {
+        gap: 12px;
+        padding-top: 16px;
+        padding-bottom: 16px;
     }
 
     .message {
         max-width: 94%;
     }
 
+    .bubble {
+        padding: 13px 14px;
+        font-size: 14px;
+        line-height: 1.55;
+    }
+
+    .composer {
+        padding-top: 12px;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+
     .composer-shell {
         grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 8px;
+        border-radius: 14px;
     }
 
     .composer-actions {
-        justify-content: flex-end;
-        flex-wrap: wrap;
+        justify-content: stretch;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .tool-btn {
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+        border-radius: 10px;
+    }
+
+    .ghost-btn {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding: 0 10px;
+        font-size: 13px;
+    }
+
+    .icon-send-btn {
+        width: 44px;
+        min-width: 44px;
     }
 
     .welcome-panel {
         margin: 0;
-        padding: 22px;
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .welcome-panel h3 {
+        font-size: 23px;
+    }
+
+    .welcome-panel p {
+        margin-bottom: 16px;
+        font-size: 14px;
     }
 
     .welcome-actions {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .welcome-actions button {
+        min-height: 82px;
+        padding: 11px;
+    }
+
+    .composer-hint {
+        display: none;
+    }
+}
+
+@media (max-width: 520px) {
+    .app {
+        grid-template-rows: minmax(188px, 34dvh) minmax(0, 1fr);
+    }
+
+    .sidebar {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .sidebar-status,
+    .modules-panel {
+        display: none;
+    }
+
+    .new-chat-btn {
+        min-height: 38px;
+    }
+
+    .history-panel {
+        min-height: 80px;
+        max-height: 128px;
+    }
+
+    .chat-row {
+        grid-template-columns: minmax(0, 1fr) 42px 42px;
+        gap: 5px;
+    }
+
+    .rename-chat-btn,
+    .delete-chat-btn {
+        width: 42px;
+        min-height: 40px;
+        font-size: 10px;
+    }
+
+    .chat-header {
+        align-items: flex-start;
+        padding: 10px 12px;
+    }
+
+    .chat-kicker {
+        font-size: 10px;
+    }
+
+    .chat-header h2 {
+        font-size: 18px;
+    }
+
+    .header-actions {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .session-pill {
+        display: none;
+    }
+
+    .chat-box,
+    .composer {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .welcome-panel {
+        padding: 14px;
+    }
+
+    .welcome-mark {
+        width: 46px;
+        height: 46px;
+        margin-bottom: 12px;
+    }
+
+    .welcome-panel h3 {
+        font-size: 20px;
+    }
+
+    .welcome-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-actions button {
+        min-height: 64px;
+    }
+
+    textarea {
+        min-height: 42px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .attachment-menu {
+        left: 0;
+        right: auto;
+    }
+}
+
+@media (max-width: 380px) {
+    .sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-panel {
+        display: none;
+    }
+
+    .app {
+        grid-template-rows: minmax(160px, 30dvh) minmax(0, 1fr);
+    }
+
+    .ghost-btn {
+        display: none;
     }
 }
