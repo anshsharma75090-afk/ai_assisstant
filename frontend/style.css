@@ -161,8 +161,8 @@ textarea:disabled {
     border-radius: 12px;
     color: #ffffff;
     font-weight: 800;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    box-shadow: 0 12px 28px rgba(13, 148, 136, 0.26);
+    background: linear-gradient(135deg, #1a3fa0, #0a7a6b);
+    box-shadow: 0 12px 28px rgba(13, 148, 136, 0.35);
 }
 
 .brand h1 {
@@ -173,7 +173,7 @@ textarea:disabled {
 
 .brand p {
     margin-top: 4px;
-    color: #627089;
+    color: #a9b8ce;
     font-size: 13px;
 }
 
