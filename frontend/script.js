@@ -69,7 +69,7 @@ function safeJsonParse(value, fallback) {
     }
 }
 
-const FALLBACK_API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://ai-assisstant-ws4u.onrender.com";
 let API_URL = (storageGet("apiUrl") || FALLBACK_API_URL).replace("8002", "8000");
 
 const chatBox = document.getElementById("chatBox");
