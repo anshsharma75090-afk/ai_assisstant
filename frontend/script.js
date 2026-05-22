@@ -464,6 +464,8 @@ function setAttachedPdf(file) {
 }
 
 function addMessage(text, sender, options = {}) {
+    removeWelcomeMessage();
+
     const message = document.createElement("article");
     message.className = `message ${sender}`;
 
@@ -574,6 +576,13 @@ function addWelcomeMessage() {
         </div>
     `;
     chatBox.appendChild(welcome);
+}
+
+function removeWelcomeMessage() {
+    const welcome = chatBox.querySelector(".welcome-panel");
+    if (welcome) {
+        welcome.remove();
+    }
 }
 
 function quickPrompt(text) {

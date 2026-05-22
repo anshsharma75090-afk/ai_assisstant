@@ -1591,3 +1591,120 @@ body[data-theme="light"] {
         min-width: 56px;
     }
 }
+
+@media (max-width: 900px) {
+    .composer {
+        overflow: hidden;
+    }
+
+    .composer-shell {
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        align-items: stretch;
+    }
+
+    .attachment-preview,
+    .attachment-card,
+    .composer-actions,
+    textarea {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .attachment-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .attachment-card img {
+        width: 52px;
+        height: 42px;
+    }
+
+    .file-chip-icon {
+        width: 44px;
+        height: 38px;
+    }
+
+    .attachment-card button {
+        min-width: 64px;
+        padding: 0 8px;
+    }
+
+    .composer-actions {
+        display: grid;
+        grid-template-columns: 42px 42px minmax(74px, 1fr) 46px;
+        width: 100%;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .attach-wrap {
+        width: 42px;
+        min-width: 0;
+    }
+
+    .tool-btn {
+        width: 42px;
+        min-width: 42px;
+    }
+
+    .ghost-btn {
+        width: 100%;
+        min-width: 0;
+        padding: 0 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .icon-send-btn {
+        width: 46px;
+        min-width: 46px;
+        justify-self: end;
+    }
+}
+
+@media (max-width: 420px) {
+    .attachment-card {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .attachment-card button {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .composer-actions {
+        grid-template-columns: 40px 40px minmax(0, 1fr) 44px;
+    }
+
+    .attach-wrap,
+    .tool-btn {
+        width: 40px;
+        min-width: 40px;
+    }
+
+    .ghost-btn {
+        font-size: 12px;
+    }
+
+    .icon-send-btn {
+        width: 44px;
+        min-width: 44px;
+    }
+}
+
+@media (max-width: 380px) {
+    .composer-actions {
+        grid-template-columns: 40px 40px 44px;
+    }
+
+    .icon-send-btn {
+        grid-column: 3;
+    }
+}
