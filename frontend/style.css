@@ -153,20 +153,16 @@ textarea:disabled {
     gap: 12px;
 }
 
-.brand-mark {
-    display: grid;
-    place-items: center;
+.brand-logo {
     width: 46px;
     height: 46px;
+    flex: 0 0 auto;
     border-radius: 12px;
-    color: #ffffff;
-    font-weight: 800;
-    background: linear-gradient(135deg, #1a3fa0, #0a7a6b);
     box-shadow: 0 12px 28px rgba(13, 148, 136, 0.35);
 }
 
 .brand h1 {
-    color: #320dda;
+    color: #5b7cff;
     font-size: 21px;
     line-height: 1.1;
     font-weight: 800;
@@ -614,16 +610,13 @@ textarea:disabled {
     backdrop-filter: blur(16px);
 }
 
-.welcome-mark {
-    display: grid;
-    place-items: center;
+.welcome-logo {
+    display: block;
     width: 54px;
     height: 54px;
     margin: 0 auto 16px;
     border-radius: 16px;
-    color: #ffffff;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
+    box-shadow: 0 16px 34px rgba(13, 148, 136, 0.28);
 }
 
 .welcome-panel h3 {
@@ -1131,7 +1124,7 @@ body[data-theme="light"] {
         grid-column: 1 / -1;
     }
 
-    .brand-mark {
+    .brand-logo {
         width: 40px;
         height: 40px;
         border-radius: 10px;
@@ -1384,7 +1377,7 @@ body[data-theme="light"] {
         padding: 14px;
     }
 
-    .welcome-mark {
+    .welcome-logo {
         width: 46px;
         height: 46px;
         margin-bottom: 12px;

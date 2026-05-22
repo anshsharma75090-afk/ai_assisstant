@@ -69,8 +69,27 @@ function safeJsonParse(value, fallback) {
     }
 }
 
+const LOCAL_API_URL = "http://127.0.0.1:8000";
 const FALLBACK_API_URL = "https://ai-assisstant-ws4u.onrender.com";
-let API_URL = FALLBACK_API_URL;
+
+function isLocalFrontend() {
+    if (typeof window === "undefined") return true;
+    return ["127.0.0.1", "localhost", ""].includes(window.location.hostname) || window.location.protocol === "file:";
+}
+
+function getDefaultApiUrl() {
+    return isLocalFrontend() ? LOCAL_API_URL : FALLBACK_API_URL;
+}
+
+function getInitialApiUrl() {
+    const storedApiUrl = storageGet("apiUrl");
+    if (isLocalFrontend() && (!storedApiUrl || storedApiUrl === FALLBACK_API_URL)) {
+        return LOCAL_API_URL;
+    }
+    return storedApiUrl || getDefaultApiUrl();
+}
+
+let API_URL = getInitialApiUrl();
 
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
@@ -220,7 +239,7 @@ function logout() {
     authToken = "";
     authUser = null;
     localAuth = false;
-    API_URL = FALLBACK_API_URL;
+    API_URL = getDefaultApiUrl();
     currentSessionId = null;
     clearChatBox();
     chatHistory.innerHTML = "";
@@ -237,7 +256,7 @@ function completeLocalLogin(name, email) {
         name: name || email.split("@")[0],
         email
     };
-    API_URL = FALLBACK_API_URL;
+    API_URL = getDefaultApiUrl();
     storageSet("localAuth", "true");
     storageSet("authToken", authToken);
     storageSet("authUser", JSON.stringify(authUser));
@@ -553,8 +572,8 @@ function addWelcomeMessage() {
     const welcome = document.createElement("section");
     welcome.className = "welcome-panel";
     welcome.innerHTML = `
-        <div class="welcome-mark">LX</div>
-        <h3>What do you want to learn today?</h3>
+        <img class="welcome-logo" src="assets/infera-logo.svg" alt="Infera AI logo">
+        <h3>What do you want to solve today?</h3>
         <p>Start with a question, upload a PDF, debug code, or use voice input.</p>
         <div class="welcome-actions">
             <button type="button" onclick="quickPrompt('Explain this topic in simple language: ')">
@@ -1800,16 +1819,10 @@ authForm.addEventListener("submit", async (event) => {
         await loadChatSessions();
     } catch (error) {
         if (error.message === "Failed to fetch") {
-            completeLocalLogin(authName.value.trim(), authEmail.value.trim());
-            showAppForUser();
-            clearChatBox();
-            setSession(null);
-            addWelcomeMessage();
-            await loadChatSessions();
-            return;
+            authStatus.textContent = `Backend not reachable at ${API_URL}. Start backend on port 8000 and try again.`;
+        } else {
+            authStatus.textContent = error.message;
         }
-
-        authStatus.textContent = error.message;
     } finally {
         authSubmitBtn.disabled = false;
     }
@@ -1818,6 +1831,7 @@ authForm.addEventListener("submit", async (event) => {
 async function initApp() {
     setAuthMode("login");
     refreshVoiceAvailability();
+    storageSet("apiUrl", API_URL);
 
     if (!authToken || !authUser) {
         showLogin();
