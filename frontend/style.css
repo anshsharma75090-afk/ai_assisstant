@@ -110,8 +110,36 @@ button {
     padding: 0 14px;
     border: 1px solid var(--line);
     border-radius: 8px;
-    color: var(--ink);
+    color: #07111f;
     outline: 0;
+    background: #ffffff;
+    caret-color: var(--primary);
+    font-weight: 600;
+}
+
+.auth-form input::placeholder {
+    color: #64748b;
+    opacity: 1;
+    font-weight: 500;
+}
+
+.auth-form input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
+}
+
+.auth-form input:-webkit-autofill,
+.auth-form input:-webkit-autofill:hover,
+.auth-form input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #07111f;
+    box-shadow: 0 0 0 1000px #ffffff inset, 0 0 0 4px rgba(37, 99, 235, 0.14);
+    caret-color: var(--primary);
+}
+
+body[data-theme="dark"] .auth-form input,
+body[data-theme="light"] .auth-form input {
+    color: #07111f;
+    background: #ffffff;
 }
 
 .auth-status {
