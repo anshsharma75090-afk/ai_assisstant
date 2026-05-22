@@ -1644,8 +1644,29 @@ body[data-theme="light"] {
     }
 
     .attach-wrap {
-        width: 42px;
-        min-width: 0;
+        display: contents;
+    }
+
+    .attachment-menu {
+        position: static;
+        z-index: 1;
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        order: -1;
+        width: 100%;
+        padding: 6px;
+        border-radius: 14px;
+        box-shadow: none;
+    }
+
+    .attachment-menu[hidden] {
+        display: none;
+    }
+
+    .attachment-menu button {
+        min-height: 42px;
+        text-align: center;
     }
 
     .tool-btn {
