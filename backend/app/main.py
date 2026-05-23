@@ -9,7 +9,7 @@ from app.routes.rag_route import router as rag_router
 from app.routes.voice_route import router as voice_router
 
 app = FastAPI(
-    title="Learnix AI",
+    title="Infera AI",
     version="1.0.0"
 )
 
@@ -31,4 +31,4 @@ app.include_router(voice_router)
 
 @app.get("/")
 async def root():
-    return {"message": "Learnix AI Running"}
+    return {"message": "Infera AI Running"}

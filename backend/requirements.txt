@@ -23,3 +23,5 @@ chromadb
 
 # Web search
 tavily-python
+
+psycopg2-binary
