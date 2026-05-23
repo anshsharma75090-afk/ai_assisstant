@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Text, DateTime, func, or_
+from sqlalchemy import Column, Integer, String, Text, DateTime, func, or_, inspect
 from app.database.db import Base, engine, SessionLocal
 
 
@@ -18,10 +18,12 @@ Base.metadata.create_all(bind=engine)
 
 
 def ensure_chat_schema():
-    with engine.connect() as connection:
-        columns = connection.exec_driver_sql("PRAGMA table_info(chat_messages)").fetchall()
-        column_names = [column[1] for column in columns]
-        if "user_id" not in column_names:
+    inspector = inspect(engine)
+    columns = inspector.get_columns("chat_messages")
+    column_names = [column["name"] for column in columns]
+
+    if "user_id" not in column_names:
+        with engine.connect() as connection:
             connection.exec_driver_sql("ALTER TABLE chat_messages ADD COLUMN user_id INTEGER")
             connection.commit()
 
