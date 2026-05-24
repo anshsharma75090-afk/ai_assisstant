@@ -55,6 +55,9 @@ def web_node(state: AssistantState):
 
 
 def critic_node(state: AssistantState):
+    if state["route"] == "web":
+        return {"final_response": state["agent_response"]}
+
     final_response = CriticAgent.review(
         user_message=state["user_message"],
         agent_response=state["agent_response"]

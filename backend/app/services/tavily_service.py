@@ -9,10 +9,14 @@ class TavilyService:
     @staticmethod
     def search(query: str):
 
-        response = client.search(
-            query=query,
-            search_depth="advanced",
-            max_results=5
-        )
+        try:
+            response = client.search(
+                query=query,
+                search_depth="advanced",
+                max_results=8
+            )
+        except Exception as error:
+            print("TAVILY SEARCH ERROR:", str(error))
+            return {"results": []}
 
         return response
