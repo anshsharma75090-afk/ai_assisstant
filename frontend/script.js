@@ -1630,9 +1630,12 @@ async function uploadPDF(askAfterUpload = false) {
     formData.append("file", selectedFile);
     formData.append("session_id", currentSessionId);
     setBusy(true);
-    const uploadMessage = addMessage(`Uploading ${label}: ${selectedFile.name}`, "user");
+    const uploadMessage = addMessage(`Attached ${label}: ${selectedFile.name}`, "user");
     const thinkingMessage = addMessage(`Reading ${label}...`, "bot", { thinking: true });
     thinkingMessage.classList.add("thinking");
+    userInput.value = "";
+    clearAttachedImage();
+    resizeComposer();
 
     try {
         const response = await authFetch(`${API_URL}/upload-pdf`, {
@@ -1662,10 +1665,6 @@ async function uploadPDF(askAfterUpload = false) {
         } else {
             updateMessage(thinkingMessage, "File is ready. Attach another file to replace it, or ask normal questions anytime.");
         }
-        attachedPdf = null;
-        pdfFile.value = "";
-        attachmentPreview.hidden = true;
-        attachmentPreview.innerHTML = "";
         await loadChatSessions();
         highlightActiveSession();
         showToast("File uploaded and ready.", "success");
@@ -1702,9 +1701,11 @@ async function uploadPdfAndAsk(selectedFile, question) {
     activeRequestId = createClientSessionId();
     formData.append("request_id", activeRequestId);
 
-    const uploadMessage = addMessage(`Uploading ${label}: ${selectedFile.name}`, "user");
+    const uploadMessage = addMessage(`Attached ${label}: ${selectedFile.name}`, "user");
     addMessage(question, "user");
     userInput.value = "";
+    clearAttachedImage();
+    resizeComposer();
     const thinkingMessage = addMessage(`Reading ${label} and preparing answer...`, "bot", { thinking: true });
     thinkingMessage.classList.add("thinking");
     activeThinkingMessage = thinkingMessage;
@@ -1728,15 +1729,20 @@ async function uploadPdfAndAsk(selectedFile, question) {
             setSession(data.session_id, chatNames[data.session_id] || `PDF: ${selectedFile.name}`);
         }
 
+        if (data.status === "failed") {
+            updateMessage(uploadMessage, `${label} upload failed: ${data.message || "No readable text found."}`);
+            updateMessage(thinkingMessage, data.answer || "File could not be processed.");
+            showToast("File upload failed.", "error");
+            await loadChatSessions();
+            highlightActiveSession();
+            return;
+        }
+
         activePdfName = data.file_name || selectedFile.name;
         updateMessage(uploadMessage, `Active document set: ${activePdfName}\nChunks stored: ${data.chunks_stored || 0}`);
         updateMessage(thinkingMessage, data.answer || "PDF answer generated.");
 
         lastAssistantText = data.answer || "";
-        attachedPdf = null;
-        pdfFile.value = "";
-        attachmentPreview.hidden = true;
-        attachmentPreview.innerHTML = "";
         await loadChatSessions();
         highlightActiveSession();
         showToast("File uploaded and answered.", "success");
