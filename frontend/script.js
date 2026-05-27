@@ -415,17 +415,22 @@ function renameChat(sessionId, fallbackName) {
 }
 
 function toggleAttachmentMenu() {
+    if (!attachmentMenu) {
+        openPdfPicker();
+        return;
+    }
     attachmentMenu.hidden = !attachmentMenu.hidden;
 }
 
 function closeAttachmentMenu() {
+    if (!attachmentMenu) return;
     attachmentMenu.hidden = true;
 }
 
 function openImagePicker() {
     closeMobileSidebar();
     closeAttachmentMenu();
-    imageInput.click();
+    pdfFile.click();
 }
 
 function openPdfPicker() {
@@ -441,6 +446,49 @@ function clearAttachedImage() {
     pdfFile.value = "";
     attachmentPreview.hidden = true;
     attachmentPreview.innerHTML = "";
+}
+
+function isImageFile(file) {
+    return Boolean(file?.type?.startsWith("image/"));
+}
+
+function isDocumentFile(file) {
+    const name = (file?.name || "").toLowerCase();
+    return file && (
+        file.type === "application/pdf"
+        || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        || file.type === "text/plain"
+        || name.endsWith(".pdf")
+        || name.endsWith(".docx")
+        || name.endsWith(".txt")
+    );
+}
+
+function getFileLabel(file) {
+    const name = (file?.name || "").toLowerCase();
+
+    if (isImageFile(file)) return "Image";
+    if (name.endsWith(".pdf") || file?.type === "application/pdf") return "PDF";
+    if (name.endsWith(".docx")) return "Word";
+    if (name.endsWith(".txt")) return "Text";
+    return "File";
+}
+
+function setAttachedFile(file) {
+    if (!file) return;
+
+    if (isImageFile(file)) {
+        setAttachedImage(file);
+        return;
+    }
+
+    if (isDocumentFile(file)) {
+        setAttachedPdf(file);
+        return;
+    }
+
+    showToast("Unsupported file. Attach image, PDF, DOCX or TXT.", "error");
+    pdfFile.value = "";
 }
 
 function setAttachedImage(file) {
@@ -468,18 +516,19 @@ function setAttachedPdf(file) {
     attachedPdf = file;
     attachedImage = null;
     imageInput.value = "";
+    const label = getFileLabel(file);
     attachmentPreview.hidden = false;
     attachmentPreview.innerHTML = `
         <div class="attachment-card pdf-card">
-            <div class="file-chip-icon">PDF</div>
+            <div class="file-chip-icon">${label}</div>
             <div>
                 <strong>${escapeHtml(file.name)}</strong>
-                <span>Ready. Add a question or press send to upload.</span>
+                <span>Ready. Add a question or press send to analyze this file.</span>
             </div>
             <button type="button" onclick="clearAttachedImage()" aria-label="Remove file">Remove</button>
         </div>
     `;
-    showToast("PDF attached.");
+    showToast(`${label} attached.`);
 }
 
 function addMessage(text, sender, options = {}) {
@@ -585,8 +634,8 @@ function addWelcomeMessage() {
                 <span>Debug with steps</span>
             </button>
             <button type="button" onclick="openPdfPicker()">
-                <strong>Attach PDF</strong>
-                <span>Upload and ask with send</span>
+                <strong>Attach file</strong>
+                <span>PDF, Word, text or image</span>
             </button>
             <button type="button" onclick="quickPrompt('Search and explain the latest information about: ')">
                 <strong>Research</strong>
@@ -1557,9 +1606,10 @@ async function startListening() {
 async function uploadPDF(askAfterUpload = false) {
     const selectedFile = attachedPdf || pdfFile.files[0];
     const question = userInput.value.trim();
+    const label = getFileLabel(selectedFile);
 
     if (!selectedFile) {
-        showToast("Choose a PDF first.", "error");
+        showToast("Choose a file first.", "error");
         openPdfPicker();
         return;
     }
@@ -1577,8 +1627,8 @@ async function uploadPDF(askAfterUpload = false) {
     formData.append("file", selectedFile);
     formData.append("session_id", currentSessionId);
     setBusy(true);
-    const uploadMessage = addMessage(`Uploading PDF: ${selectedFile.name}`, "user");
-    const thinkingMessage = addMessage("Reading PDF...", "bot", { thinking: true });
+    const uploadMessage = addMessage(`Uploading ${label}: ${selectedFile.name}`, "user");
+    const thinkingMessage = addMessage(`Reading ${label}...`, "bot", { thinking: true });
     thinkingMessage.classList.add("thinking");
 
     try {
@@ -1595,19 +1645,19 @@ async function uploadPDF(askAfterUpload = false) {
         }
 
         if (data.status === "failed") {
-            updateMessage(uploadMessage, `PDF upload failed: ${data.message || "No readable text found."}`);
-            updateMessage(thinkingMessage, "PDF could not be processed.");
-            showToast("PDF upload failed.", "error");
+            updateMessage(uploadMessage, `${label} upload failed: ${data.message || "No readable text found."}`);
+            updateMessage(thinkingMessage, "File could not be processed.");
+            showToast("File upload failed.", "error");
             return;
         }
 
         const uploadedName = data.file_name || selectedFile.name;
         activePdfName = uploadedName;
-        updateMessage(uploadMessage, `Active PDF set: ${uploadedName}\nChunks stored: ${data.chunks_stored || 0}\nAsk PDF will answer only from this PDF.`);
+        updateMessage(uploadMessage, `Active document set: ${uploadedName}\nChunks stored: ${data.chunks_stored || 0}\nDocument questions will answer only from this file.`);
         if (question && askAfterUpload) {
             thinkingMessage.remove();
         } else {
-            updateMessage(thinkingMessage, "PDF is ready. Attach another PDF to replace it, or ask normal questions anytime.");
+            updateMessage(thinkingMessage, "File is ready. Attach another file to replace it, or ask normal questions anytime.");
         }
         attachedPdf = null;
         pdfFile.value = "";
@@ -1615,7 +1665,7 @@ async function uploadPDF(askAfterUpload = false) {
         attachmentPreview.innerHTML = "";
         await loadChatSessions();
         highlightActiveSession();
-        showToast("PDF uploaded and ready.", "success");
+        showToast("File uploaded and ready.", "success");
 
         if (question && askAfterUpload) {
             setBusy(false);
@@ -1628,16 +1678,17 @@ async function uploadPDF(askAfterUpload = false) {
             );
         }
     } catch (error) {
-        updateMessage(uploadMessage, "PDF upload failed. Please try again.");
-        updateMessage(thinkingMessage, "PDF upload failed. Please try again.");
+        updateMessage(uploadMessage, "File upload failed. Please try again.");
+        updateMessage(thinkingMessage, "File upload failed. Please try again.");
         console.error(error);
-        showToast("PDF upload failed.", "error");
+        showToast("File upload failed.", "error");
     } finally {
         setBusy(false);
     }
 }
 
 async function uploadPdfAndAsk(selectedFile, question) {
+    const label = getFileLabel(selectedFile);
     const formData = new FormData();
     formData.append("file", selectedFile);
     formData.append("session_id", currentSessionId);
@@ -1648,10 +1699,10 @@ async function uploadPdfAndAsk(selectedFile, question) {
     activeRequestId = createClientSessionId();
     formData.append("request_id", activeRequestId);
 
-    const uploadMessage = addMessage(`Uploading PDF: ${selectedFile.name}`, "user");
+    const uploadMessage = addMessage(`Uploading ${label}: ${selectedFile.name}`, "user");
     addMessage(question, "user");
     userInput.value = "";
-    const thinkingMessage = addMessage("Reading PDF and preparing answer...", "bot", { thinking: true });
+    const thinkingMessage = addMessage(`Reading ${label} and preparing answer...`, "bot", { thinking: true });
     thinkingMessage.classList.add("thinking");
     activeThinkingMessage = thinkingMessage;
 
@@ -1662,7 +1713,7 @@ async function uploadPdfAndAsk(selectedFile, question) {
             signal: activeAbortController.signal
         });
 
-        if (!response.ok) throw new Error("PDF question failed");
+        if (!response.ok) throw new Error("Document question failed");
 
         const data = await response.json();
         if (data.cancelled) {
@@ -1675,7 +1726,7 @@ async function uploadPdfAndAsk(selectedFile, question) {
         }
 
         activePdfName = data.file_name || selectedFile.name;
-        updateMessage(uploadMessage, `Active PDF set: ${activePdfName}\nChunks stored: ${data.chunks_stored || 0}`);
+        updateMessage(uploadMessage, `Active document set: ${activePdfName}\nChunks stored: ${data.chunks_stored || 0}`);
         updateMessage(thinkingMessage, data.answer || "PDF answer generated.");
 
         lastAssistantText = data.answer || "";
@@ -1685,14 +1736,14 @@ async function uploadPdfAndAsk(selectedFile, question) {
         attachmentPreview.innerHTML = "";
         await loadChatSessions();
         highlightActiveSession();
-        showToast("PDF uploaded and answered.", "success");
+        showToast("File uploaded and answered.", "success");
     } catch (error) {
         console.error(error);
         if (error.name === "AbortError") {
             updateMessage(thinkingMessage, "Generation stopped.");
         } else {
-            updateMessage(thinkingMessage, "PDF answer failed. Please try again.");
-            showToast("PDF answer failed.", "error");
+            updateMessage(thinkingMessage, "Document answer failed. Please try again.");
+            showToast("Document answer failed.", "error");
         }
     } finally {
         activeAbortController = null;
@@ -1756,7 +1807,7 @@ function attachWindowActions() {
 attachWindowActions();
 
 pdfFile.addEventListener("change", () => {
-    setAttachedPdf(pdfFile.files[0]);
+    setAttachedFile(pdfFile.files[0]);
 });
 
 imageInput.addEventListener("change", () => {

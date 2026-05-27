@@ -36,8 +36,12 @@ Previous Conversation in this chat:
 Current image request:
 {user_message}
 
-Instruction:
-Use this chat's previous messages to understand the user's follow-up request, but answer based on the current image too.
+Image memory policy:
+- The currently uploaded image is the primary image you can see right now.
+- Previous images are not visible to you now, but their earlier analysis/answer may be present in the previous conversation above.
+- If the user asks about "both images", "dono", "compare", "difference", "same issue", "combined conclusion", or "previous image", combine the previous image analysis from chat context with the current image analysis and give one clear conclusion.
+- If the user does not ask for comparison or both-image conclusion, answer only for the most recent/current image.
+- Do not pretend you can directly see old images again; use only the previous written analysis from chat memory.
 """
 
     response = GeminiService.analyze_image(

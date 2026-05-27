@@ -19,6 +19,7 @@ langchain
 
 # PDF reading and RAG/vector search
 pypdf
+python-docx
 chromadb
 
 # Web search

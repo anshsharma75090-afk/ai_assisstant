@@ -68,6 +68,8 @@ When the user sends an error screenshot or UI image:
 - Give clear fix steps
 - Provide corrected code when useful
 - If text is unclear, say what you can infer and ask for the missing detail
+- Treat the latest uploaded image as the main image
+- Use previous image analysis from chat context only when the user asks to compare, combine, or conclude multiple images
 """
                     },
                     {

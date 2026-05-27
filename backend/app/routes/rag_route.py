@@ -52,6 +52,21 @@ def get_active_pdf(session_id: str):
     return load_pdf_state().get(session_id)
 
 
+def document_label(file_name: str | None):
+    lower_name = (file_name or "").lower()
+
+    if lower_name.endswith(".pdf"):
+        return "PDF"
+
+    if lower_name.endswith(".docx"):
+        return "Word document"
+
+    if lower_name.endswith(".txt"):
+        return "Text file"
+
+    return "Document"
+
+
 @router.post("/upload-pdf")
 async def upload_pdf(
     file: UploadFile = File(...),
@@ -60,7 +75,8 @@ async def upload_pdf(
 ):
     active_session_id = session_id or str(uuid.uuid4())
     upload_id = str(uuid.uuid4())
-    save_message(active_session_id, "user", f"Uploaded PDF: {file.filename}", user_id=user.id)
+    label = document_label(file.filename)
+    save_message(active_session_id, "user", f"Uploaded {label}: {file.filename}", user_id=user.id)
 
     file_path = os.path.join(UPLOAD_DIR, file.filename)
 
@@ -78,14 +94,14 @@ async def upload_pdf(
         save_message(
             active_session_id,
             "assistant",
-            f"Active PDF set: {result.get('file_name')}\nChunks stored: {result.get('chunks_stored', 0)}\nAsk PDF will now answer only from this PDF.",
+            f"Active document set: {result.get('file_name')}\nChunks stored: {result.get('chunks_stored', 0)}\nAsk document questions will now answer only from this file.",
             user_id=user.id
         )
     else:
         save_message(
             active_session_id,
             "assistant",
-            f"PDF upload failed: {result.get('message', 'Could not process this PDF.')}",
+            f"{label} upload failed: {result.get('message', 'Could not process this document.')}",
             user_id=user.id
         )
 
@@ -103,8 +119,9 @@ async def upload_pdf_and_ask(
 ):
     active_session_id = session_id or str(uuid.uuid4())
     upload_id = str(uuid.uuid4())
-    save_message(active_session_id, "user", f"Uploaded PDF: {file.filename}", user_id=user.id)
-    save_message(active_session_id, "user", f"PDF question: {question}", user_id=user.id)
+    label = document_label(file.filename)
+    save_message(active_session_id, "user", f"Uploaded {label}: {file.filename}", user_id=user.id)
+    save_message(active_session_id, "user", f"Document question: {question}", user_id=user.id)
 
     file_path = os.path.join(UPLOAD_DIR, file.filename)
 
@@ -119,7 +136,7 @@ async def upload_pdf_and_ask(
     )
 
     if result.get("status") != "success":
-        answer = f"PDF upload failed: {result.get('message', 'Could not process this PDF.')}"
+        answer = f"{label} upload failed: {result.get('message', 'Could not process this document.')}"
         save_message(active_session_id, "assistant", answer, user_id=user.id)
         result["session_id"] = active_session_id
         result["answer"] = answer
@@ -146,7 +163,7 @@ async def upload_pdf_and_ask(
     save_message(
         active_session_id,
         "assistant",
-        f"Active PDF set: {file.filename}\nChunks stored: {result.get('chunks_stored', 0)}",
+        f"Active document set: {file.filename}\nChunks stored: {result.get('chunks_stored', 0)}",
         user_id=user.id
     )
     save_message(active_session_id, "assistant", answer, user_id=user.id)
@@ -166,10 +183,10 @@ async def ask_pdf(request: RagQuestion, user: User = Depends(get_current_user)):
     session_id = request.session_id or str(uuid.uuid4())
     active_pdf = get_active_pdf(session_id)
     conversation_context = get_conversation_context(session_id, user_id=user.id)
-    save_message(session_id, "user", f"PDF question: {request.question}", user_id=user.id)
+    save_message(session_id, "user", f"Document question: {request.question}", user_id=user.id)
 
     if not active_pdf:
-        answer = "No active PDF is linked to this chat. Please upload a PDF in this chat first."
+        answer = "No active document is linked to this chat. Please upload a PDF, DOCX or TXT file in this chat first."
     else:
         answer = RagAgent.answer(
             question=request.question,
