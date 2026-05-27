@@ -101,6 +101,7 @@ const pdfFile = document.getElementById("pdfFile");
 const imageInput = document.getElementById("imageInput");
 const attachmentMenu = document.getElementById("attachmentMenu");
 const attachmentPreview = document.getElementById("attachmentPreview");
+const attachFileBtn = document.getElementById("attachFileBtn");
 const toastRoot = document.getElementById("toastRoot");
 const sendBtn = document.getElementById("sendBtn");
 const voiceSendBtn = document.getElementById("voiceSendBtn");
@@ -420,11 +421,13 @@ function toggleAttachmentMenu() {
         return;
     }
     attachmentMenu.hidden = !attachmentMenu.hidden;
+    attachFileBtn?.setAttribute("aria-expanded", String(!attachmentMenu.hidden));
 }
 
 function closeAttachmentMenu() {
     if (!attachmentMenu) return;
     attachmentMenu.hidden = true;
+    attachFileBtn?.setAttribute("aria-expanded", "false");
 }
 
 function openImagePicker() {
@@ -1812,6 +1815,12 @@ pdfFile.addEventListener("change", () => {
 
 imageInput.addEventListener("change", () => {
     setAttachedImage(imageInput.files[0]);
+});
+
+document.addEventListener("click", (event) => {
+    if (!attachmentMenu || attachmentMenu.hidden) return;
+    if (event.target.closest(".attach-wrap")) return;
+    closeAttachmentMenu();
 });
 
 userInput.addEventListener("input", resizeComposer);

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infera AI</title>
-    <link rel="stylesheet" href="style.css?v=53">
+    <link rel="stylesheet" href="style.css?v=54">
 </head>
 <body>
     <section id="authScreen" class="auth-screen">
@@ -130,11 +130,14 @@
                         <input type="file" id="imageInput" accept="image/*" hidden>
                         <input type="file" id="pdfFile" accept="image/*,.pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" hidden>
                         <div class="attach-wrap">
-                            <button id="attachFileBtn" class="tool-btn" type="button" title="Attach file" onclick="openPdfPicker()" aria-label="Attach file">
+                            <button id="attachFileBtn" class="tool-btn" type="button" title="Attach file" onclick="toggleAttachmentMenu()" aria-label="Attach file" aria-haspopup="menu" aria-expanded="false">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="m21.4 11.6-8.8 8.8a6 6 0 0 1-8.5-8.5l9.4-9.4a4 4 0 0 1 5.7 5.7l-9.4 9.4a2 2 0 0 1-2.8-2.8l8.8-8.8"></path>
                                 </svg>
                             </button>
+                            <div id="attachmentMenu" class="attachment-menu" role="menu" hidden>
+                                <button type="button" role="menuitem" onclick="openPdfPicker()">Attach file</button>
+                            </div>
                         </div>
                         <button id="composerMicBtn" class="tool-btn" type="button" title="Voice input" onclick="startListening()" aria-label="Voice input">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -158,6 +161,6 @@
     </div>
     <div id="toastRoot" class="toast-root" aria-live="polite"></div>
 
-    <script src="script.js?v=53"></script>
+    <script src="script.js?v=54"></script>
 </body>
 </html>
